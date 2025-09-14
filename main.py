@@ -37,8 +37,8 @@ ASSETS = {
     ]
 }
 
-# --- Generate Script using OpenRouter ---
-GEMINI_KEY = "AIzaSyAcj_N4KwpsEs7fZ6P-rU1V8q5dEURYhGE" 
+
+GEMINI_KEY = "" 
 
 def generate_script(prompt: str) -> str:
     if not GEMINI_KEY:
@@ -56,7 +56,7 @@ def generate_script(prompt: str) -> str:
     resp = requests.post(url, headers=headers, json=data)
     if resp.status_code == 200:
         try:
-            # Correctly extract text from Gemini response
+    
             candidate = resp.json()["candidates"][0]
             return candidate["content"]["parts"][0]["text"]
         except (KeyError, IndexError, TypeError):
@@ -65,7 +65,7 @@ def generate_script(prompt: str) -> str:
 
 
 
-# --- Generate Audio with gTTS ---
+
 def generate_audio(text: str) -> str:
     filename = f"audio_{uuid.uuid4().hex}.mp3"
     path = f"static/audio/{filename}"
@@ -73,7 +73,7 @@ def generate_audio(text: str) -> str:
     tts.save(path)
     return f"/static/audio/{filename}"
 
-# --- API Endpoint ---
+
 @app.post("/generate")
 async def generate(prompt: str = Form(...)):
     script = generate_script(prompt)
@@ -86,7 +86,7 @@ async def generate(prompt: str = Form(...)):
         "assets": {"images": images, "videos": videos}
     })
 
-# Helper function (no route decorator)
+
 def get_duration(path: str) -> float:
     """Return duration in seconds using ffprobe"""
     result = subprocess.run(
@@ -102,9 +102,8 @@ async def create_final_video(payload: dict):
     audio_url = payload.get("audio")
     image_url = payload.get("image")
     video_url = payload.get("video")
-    script_text = payload.get("script", "")  # Add script text
+    script_text = payload.get("script", "")  
 
-    # Convert URLs to local paths
     audio_path = audio_url.replace("/static/", "static/")
     image_path = image_url.replace("/static/", "static/")
     video_path = video_url.replace("/static/", "static/") if video_url else None
@@ -112,7 +111,7 @@ async def create_final_video(payload: dict):
     final_filename = f"final_{uuid.uuid4().hex}.mp4"
     final_path = f"static/{final_filename}"
 
-    # Prepare text overlay
+
     import textwrap
     wrapped_text = "\\n".join(textwrap.wrap(script_text, width=40))
     font_path = "static/fonts/Roboto-Bold.ttf"
