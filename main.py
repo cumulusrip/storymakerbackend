@@ -5,10 +5,9 @@ from fastapi.responses import JSONResponse
 import requests, os, random, uuid, subprocess
 from gtts import gTTS
 
-# Initialize
 app = FastAPI()
 
-# Allow CORS (frontend Next.js will call this API)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,14 +15,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Setup static folders ---
+
 os.makedirs("static/audio", exist_ok=True)
 os.makedirs("static/images", exist_ok=True)
 os.makedirs("static/videos", exist_ok=True)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Predefined assets (match your actual files)
+
 ASSETS = {
     "images": [
         "/static/images/1.jpeg",
